@@ -1,0 +1,51 @@
+spring:
+  profiles:
+    active: local
+server:
+  port: 8081
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  kafka:
+    template:
+      default-topic: bookstore-events
+    consumer:
+      bootstrap-servers: {
+      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: boostore-events-listener-group
+    producer:
+      bootstrap-servers:
+        -   
+      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+  jpa:
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+  h2:
+    console:
+      enabled: true
+---
+spring:
+  profiles: nonprod
+  kafka:
+    consumer:
+      bootstrap-servers:
+      key-serializer: org.apache.kafka.common.serialization.IntegerDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: boostore-events-listener-group
+---
+spring:
+  profiles: prod
+  kafka:
+    consumer:
+      bootstrap-servers: 
+      key-serializer: org.apache.kafka.common.serialization.IntegerDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: boostore-events-listener-group
